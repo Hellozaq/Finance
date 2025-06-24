@@ -1,0 +1,12 @@
+com\myproject\finance\controller\TransactionControllerTest.class
+com\myproject\finance\service\UserServiceTest.class
+com\myproject\finance\controller\HomeControllerTest.class
+com\myproject\finance\exception\GlobalExceptionHandlerTest.class
+com\myproject\finance\service\TransactionServiceTest.class
+com\myproject\finance\controller\DummyExceptionControllerTest.class
+com\myproject\finance\dto\RegisterRequestTest.class
+com\myproject\finance\config\SecurityConfigTest.class
+com\myproject\finance\dto\TransactionDTOTest.class
+com\myproject\finance\security\JwtFilterTest.class
+com\myproject\finance\security\CustomUserDetailsServiceTest.class
+com\myproject\finance\controller\AuthControllerTest.class
