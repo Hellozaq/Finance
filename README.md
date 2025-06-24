@@ -31,7 +31,7 @@ Transactions (JWT required):
 - GET /transactions – Get all transactions
 - GET /transactions/balance – Calculate total balance
 - PUT /transactions – Update a transaction
-- DELETE /transactions/delete – Delete transaction (ID via JSON)
+- DELETE /transactions/delete – Delete transaction
 
 ✅ How to Run
 1. Build with Maven:
