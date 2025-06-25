@@ -35,36 +35,6 @@ Swagger UI
 
 ---
 
-📂 Project Structure
-
-com.myproject.finance
-├── controller
-│   ├── AuthController.java
-│   └── TransactionController.java
-├── dto
-│   ├── ApiResponse.java
-│   ├── RegisterRequest.java
-│   └── TransactionDTO.java
-├── exception
-│   └── GlobalExceptionHandler.java
-├── model
-│   ├── Transaction.java
-│   └── User.java
-├── repository
-│   ├── TransactionRepository.java
-│   └── UserRepository.java
-├── security
-│   ├── CustomUserDetailsService.java
-│   ├── JwtFilter.java
-│   ├── JwtUtil.java
-│   └── SecurityConfig.java
-├── service
-│   ├── TransactionService.java
-│   └── UserService.java
-└── FinanceApplication.java
-
----
-
 🔐 API Security
 
 Uses JWT for stateless authentication.
