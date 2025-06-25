@@ -1,82 +1,206 @@
-✅ Personal Finance Manager – Spring Boot REST API
 
-Tech Stack:
-- Java 17
-- Spring Boot 3.x
-- Spring Security + JWT (JJWT 0.12.6)
-- Spring Data JPA + Hibernate
-- H2 in-memory database
-- JUnit 5 + Mockito
-- Swagger UI
-- Maven
+💰 Personal Finance Manager - Spring Boot REST API
 
-🚀 Features
-- User registration & secure login (JWT + BCrypt)
-- JWT-based authorization on all protected endpoints
-- Add, update, delete, list financial transactions
-- View total balance across all transactions
-- H2 console for debugging in-memory DB
-- Global exception handling & validation errors
-- Swagger UI auto-documentation
-- Complete unit & integration tests
+---
 
-📁 Endpoints
+📋 Project Overview
 
-Auth:
-- POST /auth/register – Register user
-- POST /auth/login – Login and return JWT
+The Personal Finance Manager is a secure RESTful API built with Spring Boot 3.x, using Java 17, Spring Security + JWT, Spring Data JPA, and an H2 in-memory database. It allows users to:
 
-Transactions (JWT required):
-- POST /transactions – Add transaction
-- GET /transactions – Get all transactions
-- GET /transactions/balance – Calculate total balance
-- PUT /transactions – Update a transaction
-- DELETE /transactions/delete – Delete transaction
+Register and log in securely.
 
-✅ How to Run
-1. Build with Maven:
-   mvn clean install
-2. Run the app:
-   mvn spring-boot:run
-3. Access Swagger:
-   http://localhost:8080/swagger-ui/index.html
-4. H2 Console:
-   http://localhost:8080/h2-console
+Add, view, update, and delete financial transactions.
+
+Calculate and retrieve current balance.
+
+Access the API documentation via Swagger UI.
+
+---
+
+🏗️ Tech Stack
+
+Java 17
+
+Spring Boot
+
+Spring Security & JWT
+
+Spring Data JPA
+
+H2 Database
+
+JUnit 5 + Mockito
+
+Swagger UI
+
+---
+
+📂 Project Structure
+
+com.myproject.finance
+├── controller
+│   ├── AuthController.java
+│   └── TransactionController.java
+├── dto
+│   ├── ApiResponse.java
+│   ├── RegisterRequest.java
+│   └── TransactionDTO.java
+├── exception
+│   └── GlobalExceptionHandler.java
+├── model
+│   ├── Transaction.java
+│   └── User.java
+├── repository
+│   ├── TransactionRepository.java
+│   └── UserRepository.java
+├── security
+│   ├── CustomUserDetailsService.java
+│   ├── JwtFilter.java
+│   ├── JwtUtil.java
+│   └── SecurityConfig.java
+├── service
+│   ├── TransactionService.java
+│   └── UserService.java
+└── FinanceApplication.java
+
+---
+
+🔐 API Security
+
+Uses JWT for stateless authentication.
+
+Spring Security protects all endpoints except /auth/register and /auth/login.
+
+Passwords are hashed with BCrypt.
+
+JWT is verified using a custom filter (JwtFilter).
+
+Security rules are defined in SecurityConfig.java.
+
+---
+
+🔧 Main Features
+
+🔑 Authentication
+
+POST /auth/register: Register a user.
+
+POST /auth/login: Log in with email and password, receive JWT token.
+
+
+💸 Transactions
+
+POST /transactions: Add a new transaction.
+
+GET /transactions: Get all user transactions.
+
+PUT /transactions: Update a transaction.
+
+DELETE /transactions/delete: Delete a transaction (ID in JSON).
+
+GET /transactions/balance: Calculate current balance.
+
+---
+
+📚 Swagger UI
+
+Swagger API Docs available at:
+📎 http://localhost:8080/swagger-ui/index.html
+
+---
+
+🛠️ How the Project Works
+
+1. User Registration/Login:
+User sends credentials → Password is hashed and stored securely → On login, token is generated using JwtUtil.
+
+
+2. Token Validation:
+Token is included in the Authorization header → Validated by JwtFilter → If valid, request proceeds.
+
+
+3. Transaction Handling:
+Authenticated users can add/update/delete their transactions.
+The balance is computed by summing incomes and subtracting expenses.
+
+
+4. Database:
+Uses H2 in-memory DB. Access it at:
+http://localhost:8080/h2-console
+JDBC URL: jdbc:h2:mem:finance-db
+
+---
 
 🧪 Testing
-- Controller-level integration tests with @SpringBootTest and MockMvc
-- Manual JWT generation using POST /auth/login
-- Transaction tests without using @WithMockUser
-- Custom DTO validation tests
-- 25 test cases passed ✅
 
-🧱 Major Challenges Faced
+Unit tests created using JUnit 5 and Mockito:
 
-1. JWT Token Validation Failure (MalformedJwtException)
-   - Occurred due to mocking the wrong token format in tests.
-   - Fixed by registering/logging in users in tests and extracting real tokens.
+Controllers: AuthControllerTest, TransactionControllerTest
 
-2. Validation Errors Not Returning 400
-   - @Valid wasn't triggering due to missing @RequestBody or invalid input JSON structure.
-   - Fixed by using JSON with empty strings and annotating controller DTO parameters correctly.
+DTOs and Exception Handling: RegisterRequestTest, TransactionDTOTest, GlobalExceptionHandlerTest
 
-3. Cannot Resolve Symbol Errors
-   - Multiple cases like Principal, WithMockUser, type() method, TransactionType enums, etc.
-   - Solved by adding required imports or mocking security dependencies.
+---
 
-4. Mocking Failures in AuthControllerTest
-   - Tried doNothing() on non-void methods like authenticate().
-   - Fixed by switching to when(...).thenReturn(...) and using @SpringBootTest instead of @WebMvcTest.
+🚧 Challenges Faced & Resolutions
 
-5. Dependency Injection Issues with CustomUserDetailsService in Tests
-   - Application failed to start due to missing bean in test context.
-   - Fixed by avoiding test slicing (@WebMvcTest) and using full context via @SpringBootTest.
+🔧 During Main Project
 
-6. Mocking Principal for JWT Authenticated Users
-   - Needed valid authentication context in integration tests instead of mocking users.
-   - Used real registration + login requests to retrieve and pass actual tokens in headers.
+1. JWT Token Parsing Error
 
-7. ID Passed in JSON vs URL Confusion
-   - Backend expected ID in JSON, not path param, for delete/update.
-   - Tests were mistakenly using URL path variable.
-   - Fixed by updating test payload to match controller contract.
+Issue: MalformedJwtException: Malformed JWT JSON
+
+Fix: The token string was corrupted or invalid. Corrected token handling logic in tests and ensured token structure was preserved.
+
+
+2. H2 Console Not Displaying
+
+Issue: Browser blocked iframe due to X-Frame-Options: DENY
+
+Fix: Configured Spring Security to allow frame access for /h2-console path.
+
+
+3. 403 Forbidden Error (CSRF)
+
+Issue: Postman and frontend blocked due to missing CSRF token.
+
+Fix: Disabled CSRF in SecurityConfig as we use stateless JWT authentication.
+
+
+4. JWT Filter Not Triggering Properly
+
+Cause: Filter order or Spring Security chain misconfiguration.
+
+Fix: Verified filter chain and correctly registered JwtFilter before UsernamePasswordAuthenticationFilter.
+
+
+5. Validation Not Triggering
+
+Issue: Bean validation annotations not being enforced.
+
+Fix: Ensured @Valid used in controller method parameters, and input fields had the necessary constraints.
+
+
+🧪 During Testing
+
+1. Mockito Error: doNothing() only works on void methods
+
+Fix: Changed to Mockito.when(...).thenReturn(...) for non-void service mocks.
+
+
+2. Record DTOs Had No Default Constructor
+
+Fix: For tests, replaced records with POJOs or used @JsonProperty mappings.
+
+
+3. Invalid Token Use in Tests
+
+Fix: Real JWTs generated via login call in @BeforeEach method in integration tests.
+
+
+4. Tests Failing Due to Path Variables
+
+Fix: Adjusted test logic to match how the app uses JSON in request body instead of URL path variables.
+
+---
+
+
