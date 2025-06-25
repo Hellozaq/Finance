@@ -1,176 +1,165 @@
+# 💰 Personal Finance Manager – REST API with Spring Boot
 
-💰 Personal Finance Manager - Spring Boot REST API
+## 📋 Project Summary
 
----
-
-📋 Project Overview
-
-The Personal Finance Manager is a secure RESTful API built with Spring Boot 3.x, using Java 17, Spring Security + JWT, Spring Data JPA, and an H2 in-memory database. It allows users to:
-
-Register and log in securely.
-
-Add, view, update, and delete financial transactions.
-
-Calculate and retrieve current balance.
-
-Access the API documentation via Swagger UI.
+The **Personal Finance Manager** is a secure RESTful API built using **Spring Boot 3**, **Java 17**, and **JWT authentication**. It allows users to manage their personal finances through registration, login, and full CRUD operations for financial transactions. The API also provides balance calculation and Swagger UI for easy testing.
 
 ---
 
-🏗️ Tech Stack
+## 🛠 Tech Stack
 
-Java 17
-
-Spring Boot
-
-Spring Security & JWT
-
-Spring Data JPA
-
-H2 Database
-
-JUnit 5 + Mockito
-
-Swagger UI
+- Java 17  
+- Spring Boot 3.x  
+- Spring Security + JWT  
+- Spring Data JPA  
+- H2 In-Memory Database  
+- JUnit 5 + Mockito  
+- Swagger UI
 
 ---
 
-🔐 API Security
+## ⚙️ Setup & Requirements
 
-Uses JWT for stateless authentication.
+### Prerequisites
 
-Spring Security protects all endpoints except /auth/register and /auth/login.
+- Java 17 installed  
+- Maven installed  
+- An IDE (e.g., IntelliJ IDEA, Eclipse)  
+- Postman or similar REST client
 
-Passwords are hashed with BCrypt.
+### How to Run
 
-JWT is verified using a custom filter (JwtFilter).
+1. **Clone the repository**
+   ```bash
+   git clone <your-repo-url>
+   cd finance
+   ```
 
-Security rules are defined in SecurityConfig.java.
+2. **Build the project**
+   ```bash
+   mvn clean install
+   ```
 
----
+3. **Run the application**
+   ```bash
+   mvn spring-boot:run
+   ```
 
-🔧 Main Features
+4. **Access the API documentation**
+   - [Swagger UI](http://localhost:8080/swagger-ui/index.html)
 
-🔑 Authentication
-
-POST /auth/register: Register a user.
-
-POST /auth/login: Log in with email and password, receive JWT token.
-
-
-💸 Transactions
-
-POST /transactions: Add a new transaction.
-
-GET /transactions: Get all user transactions.
-
-PUT /transactions: Update a transaction.
-
-DELETE /transactions/delete: Delete a transaction (ID in JSON).
-
-GET /transactions/balance: Calculate current balance.
-
----
-
-📚 Swagger UI
-
-Swagger API Docs available at:
-📎 http://localhost:8080/swagger-ui/index.html
+5. **Access H2 Database Console (Dev only)**
+   - [H2 Console](http://localhost:8080/h2-console)  
+   - JDBC URL: `jdbc:h2:mem:finance-db`  
+   - Username: `sa`  
+   - Password: *(leave blank)*
 
 ---
 
-🛠️ How the Project Works
+## 🔐 API Security
 
-1. User Registration/Login:
-User sends credentials → Password is hashed and stored securely → On login, token is generated using JwtUtil.
-
-
-2. Token Validation:
-Token is included in the Authorization header → Validated by JwtFilter → If valid, request proceeds.
-
-
-3. Transaction Handling:
-Authenticated users can add/update/delete their transactions.
-The balance is computed by summing incomes and subtracting expenses.
-
-
-4. Database:
-Uses H2 in-memory DB. Access it at:
-http://localhost:8080/h2-console
-JDBC URL: jdbc:h2:mem:finance-db
+- JWT-based stateless authentication
+- Endpoints `/auth/register` and `/auth/login` are public
+- All other endpoints require a valid JWT
+- Passwords are hashed with BCrypt
+- Token is validated via a custom filter (`JwtFilter`)
+- Security configuration is defined in `SecurityConfig.java`
 
 ---
 
-🧪 Testing
+## ✨ Features
 
-Unit tests created using JUnit 5 and Mockito:
+### 🔑 Authentication
 
-Controllers: AuthControllerTest, TransactionControllerTest
+- `POST /auth/register` → Register a new user  
+- `POST /auth/login` → Log in with credentials and receive a JWT
 
-DTOs and Exception Handling: RegisterRequestTest, TransactionDTOTest, GlobalExceptionHandlerTest
+### 💸 Transactions
 
----
-
-🚧 Challenges Faced & Resolutions
-
-🔧 During Main Project
-
-1. JWT Token Parsing Error
-
-Issue: MalformedJwtException: Malformed JWT JSON
-
-Fix: The token string was corrupted or invalid. Corrected token handling logic in tests and ensured token structure was preserved.
-
-
-2. H2 Console Not Displaying
-
-Issue: Browser blocked iframe due to X-Frame-Options: DENY
-
-Fix: Configured Spring Security to allow frame access for /h2-console path.
-
-
-3. 403 Forbidden Error (CSRF)
-
-Issue: Postman and frontend blocked due to missing CSRF token.
-
-Fix: Disabled CSRF in SecurityConfig as we use stateless JWT authentication.
-
-
-4. JWT Filter Not Triggering Properly
-
-Cause: Filter order or Spring Security chain misconfiguration.
-
-Fix: Verified filter chain and correctly registered JwtFilter before UsernamePasswordAuthenticationFilter.
-
-
-5. Validation Not Triggering
-
-Issue: Bean validation annotations not being enforced.
-
-Fix: Ensured @Valid used in controller method parameters, and input fields had the necessary constraints.
-
-
-🧪 During Testing
-
-1. Mockito Error: doNothing() only works on void methods
-
-Fix: Changed to Mockito.when(...).thenReturn(...) for non-void service mocks.
-
-
-2. Record DTOs Had No Default Constructor
-
-Fix: For tests, replaced records with POJOs or used @JsonProperty mappings.
-
-
-3. Invalid Token Use in Tests
-
-Fix: Real JWTs generated via login call in @BeforeEach method in integration tests.
-
-
-4. Tests Failing Due to Path Variables
-
-Fix: Adjusted test logic to match how the app uses JSON in request body instead of URL path variables.
+- `POST /transactions` → Add a new transaction  
+- `GET /transactions` → View all user transactions  
+- `PUT /transactions` → Update a transaction  
+- `DELETE /transactions/delete` → Delete a transaction (ID in JSON)  
+- `GET /transactions/balance` → Get current financial balance
 
 ---
 
+## 📚 API Documentation
 
+Access all endpoints and test the API via Swagger UI:
+
+📎 [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
+
+---
+
+## 🔄 Application Flow
+
+1. **User Registration & Login**
+   - New users register with email and password (hashed with BCrypt)
+   - On successful login, a JWT is issued
+
+2. **JWT Token Authentication**
+   - JWT is sent in the `Authorization` header for protected endpoints
+   - Token is validated by a custom filter before processing the request
+
+3. **Transaction Management**
+   - Authenticated users can add, edit, delete, and view their own transactions
+   - Balance is computed as total income minus total expense
+
+4. **Database**
+   - Uses H2 in-memory database for development
+   - Accessible at `/h2-console` for debugging
+
+---
+
+## ✅ Testing
+
+Tests are written using **JUnit 5** and **Mockito** for:
+
+- `AuthControllerTest`, `TransactionControllerTest`
+- `RegisterRequestTest`, `TransactionDTOTest`, `GlobalExceptionHandlerTest`
+
+---
+
+## 🚧 Challenges Faced & Resolutions
+
+### During Development
+
+- **JWT Token Parsing Error**
+  - _Issue_: MalformedJwtException  
+  - _Fix_: Ensured proper token generation and structure in tests
+
+- **H2 Console Blocked**
+  - _Issue_: Blocked by browser due to `X-Frame-Options: DENY`  
+  - _Fix_: Allowed frame access to `/h2-console` in security settings
+
+- **403 Forbidden from Postman**
+  - _Issue_: CSRF protection blocking requests  
+  - _Fix_: Disabled CSRF in `SecurityConfig` due to JWT usage
+
+- **JWT Filter Not Triggered**
+  - _Issue_: Incorrect filter registration  
+  - _Fix_: Registered `JwtFilter` before `UsernamePasswordAuthenticationFilter`
+
+- **Validation Not Working**
+  - _Issue_: `@Valid` annotations not enforced  
+  - _Fix_: Ensured controller methods use `@Valid` and DTOs use validation annotations
+
+### During Testing
+
+- **Mockito Errors**
+  - _Issue_: Used `doNothing()` on non-void methods  
+  - _Fix_: Replaced with `when(...).thenReturn(...)`
+
+- **DTO Record Issues**
+  - _Issue_: No default constructor  
+  - _Fix_: Used POJOs or configured Jackson with proper annotations
+
+- **Invalid JWTs in Tests**
+  - _Fix_: Generated real tokens in `@BeforeEach` setup
+
+- **Incorrect Use of Path Variables**
+  - _Issue_: Tests assumed ID in URL  
+  - _Fix_: Updated tests to send ID in JSON body to match actual API
+
+---
